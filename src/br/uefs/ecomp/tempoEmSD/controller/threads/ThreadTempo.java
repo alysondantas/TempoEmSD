@@ -1,6 +1,5 @@
 package br.uefs.ecomp.tempoEmSD.controller.threads;
 
-import java.text.SimpleDateFormat;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -19,7 +18,6 @@ public class ThreadTempo extends Thread  {
 		//while(true){
 
 		Timer timer = null;      
-		final SimpleDateFormat format = new SimpleDateFormat("HH:mm:ss");
 		if (timer == null)   
 		{      
 			timer = new Timer();
