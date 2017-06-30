@@ -215,6 +215,7 @@ public class RelogioGUI {
 		
 		ThreadAtualizaGUI threadAtualiza = new ThreadAtualizaGUI(lblH,lblM,lblS);
 		threadAtualiza.start();
+		
 	}
 	
 	public void inicia(){

@@ -1,5 +1,6 @@
 package br.uefs.ecomp.tempoEmSD.controller;
 
+import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadConexao;
 import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadTempo;
 
 public class ControllerRelogio {
@@ -7,6 +8,8 @@ public class ControllerRelogio {
 	private int segundos;
 	private int minutos;
 	private int horas;
+	private ThreadConexao threadConexao;
+	private boolean souReferencia;
 	
 	/**
 	 * Construtor
@@ -15,6 +18,9 @@ public class ControllerRelogio {
 		segundos = 0;
 		setMinutos(0);
 		setHoras(0);
+		threadConexao = new ThreadConexao();
+		threadConexao.start();
+		souReferencia = false;
 	}
 	
 	/**
@@ -37,8 +43,30 @@ public class ControllerRelogio {
 	}
 	
 	public void iniciaContador(){
+		verificaPrimeiro();
 		ThreadTempo threadtempo = new ThreadTempo();
 		threadtempo.start();
+	}
+	
+	public void verificaPrimeiro(){
+		int cont = 4000;
+		String msg = "";
+		boolean primeiro = true;
+		while(cont>1){
+			System.out.println("Perguntou se é o primeiro");
+			msg = threadConexao.getMsgR();
+			if(!msg.equals("")){
+				System.out.println("Tem alguem na sessão");
+				primeiro = false;
+				break;
+			}
+				cont--;
+		}
+		if(primeiro == true){
+			souReferencia = true;
+			System.out.println("Sou o primeiro");
+		}
+		
 	}
 
 	public int getSegundos() {

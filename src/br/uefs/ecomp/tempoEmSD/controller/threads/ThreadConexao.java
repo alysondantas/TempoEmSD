@@ -29,7 +29,7 @@ public class ThreadConexao extends Thread {
 				System.out.println("Aguardando receber mensagem:");
 				socket.receive(dgram);
 				String msg = new String(b, 0, dgram.getLength()).trim();//limpa a mensagem recebida
-				this.setMsgR(msg);
+				this.msgR = msg;
 				System.out.println("Mensagem recebida " + msg + " de " + dgram.getAddress());
 				dgram.setLength(b.length); 
 
