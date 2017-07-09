@@ -10,11 +10,15 @@ public class ThreadAtualizaGUI extends Thread {
 	private JLabel lblH;
 	private JLabel lblM;
 	private JLabel lblS;
+	private JLabel lblId;
+	private JLabel lblIdR;
 	
-	public ThreadAtualizaGUI(JLabel lblH, JLabel lblM, JLabel lblS){
+	public ThreadAtualizaGUI(JLabel lblH, JLabel lblM, JLabel lblS,JLabel lblId, JLabel labelIdReferencia){
 		this.lblH = lblH;
 		this.lblM = lblM;
 		this.lblS = lblS;
+		this.lblId = lblId;
+		this.lblIdR = labelIdReferencia;
 	}
 	
 	@Override
@@ -24,6 +28,7 @@ public class ThreadAtualizaGUI extends Thread {
 			int horas = controller.getHoras();
 			int minutos = controller.getMinutos();
 			int segundos = controller.getSegundos();
+			int id = controller.getId();
 			String sHoras;
 			if(horas<10){
 				sHoras = "0" + horas;
@@ -42,11 +47,15 @@ public class ThreadAtualizaGUI extends Thread {
 			}else{
 				sSegundos = "" + segundos;
 			}
+			
+			int idR = controller.getIdReferencia();
 				
 			lblH.setText(sHoras);
 			lblM.setText(sMinutos);
 			lblS.setText(sSegundos);
 			
+			lblId.setText(id + "");
+			lblIdR.setText(idR + "");
 			
 			try {
 				Thread.sleep(200);//demora meio minuto para atualizar novamente

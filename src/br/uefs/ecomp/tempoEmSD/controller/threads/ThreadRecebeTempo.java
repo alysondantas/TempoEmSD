@@ -7,12 +7,17 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.regex.Pattern;
 
-public class ThreadConexao extends Thread {
+import br.uefs.ecomp.tempoEmSD.controller.ControllerRelogio;
+
+public class ThreadRecebeTempo extends Thread {
 
 	private String msgR;
+	private ControllerRelogio controller;
 
-	public ThreadConexao(){
+	public ThreadRecebeTempo(){
+		controller = ControllerRelogio.getInstance();
 		setMsgR("");
 	}
 
@@ -26,13 +31,20 @@ public class ThreadConexao extends Thread {
 				byte[] b = new byte[1024];
 				DatagramPacket dgram = new DatagramPacket(b, b.length);
 
-				System.out.println("Aguardando receber mensagem:");
+				//System.out.println("Aguardando receber mensagem:");
 				socket.receive(dgram);
 				String msg = new String(b, 0, dgram.getLength()).trim();//limpa a mensagem recebida
 				this.msgR = msg;
-				System.out.println("Mensagem recebida " + msg + " de " + dgram.getAddress());
+				//System.out.println("Mensagem recebida " + msg + " de " + dgram.getAddress());
 				dgram.setLength(b.length); 
-
+				
+				String informacoes[] = msg.split(Pattern.quote(":"));
+				controller.setUltimaH(Integer.parseInt(informacoes[0]));
+				controller.setUltimoM(Integer.parseInt(informacoes[1]));
+				controller.setUltimoS(Integer.parseInt(informacoes[2]));
+				controller.setIdReferencia(Integer.parseInt(informacoes[3]));
+				controller.setBufferCheio(true);
+				
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

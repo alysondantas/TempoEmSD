@@ -32,6 +32,8 @@ public class RelogioGUI {
 	private JLabel lblH;
 	private JLabel lblM;
 	private JLabel lblS;
+	private JLabel lblId;
+	private JLabel labelIdReferencia;
 	private ControllerRelogio controller = ControllerRelogio.getInstance();
 
 
@@ -93,18 +95,18 @@ public class RelogioGUI {
 		
 		JButton button = new JButton("Alterar");
 		button.setEnabled(false);
-		button.setBounds(310, 122, 89, 23);
+		button.setBounds(310, 96, 89, 23);
 		panel.add(button);
 		
 		textField = new JTextField();
 		textField.setEnabled(false);
 		textField.setColumns(10);
-		textField.setBounds(310, 78, 28, 22);
+		textField.setBounds(310, 63, 28, 22);
 		panel.add(textField);
 		
-		JLabel label = new JLabel("1.0");
+		JLabel label = new JLabel("0.0");
 		label.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		label.setBounds(310, 36, 28, 22);
+		label.setBounds(310, 27, 28, 22);
 		panel.add(label);
 		
 		JLabel label_1 = new JLabel("Drift:");
@@ -114,29 +116,29 @@ public class RelogioGUI {
 		textFieldSA = new JTextField();
 		textFieldSA.setEnabled(false);
 		textFieldSA.setColumns(10);
-		textFieldSA.setBounds(121, 79, 28, 20);
+		textFieldSA.setBounds(121, 64, 28, 20);
 		panel.add(textFieldSA);
 		
 		JLabel label_2 = new JLabel(":");
 		label_2.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		label_2.setBounds(104, 75, 18, 22);
+		label_2.setBounds(104, 60, 18, 22);
 		panel.add(label_2);
 		
 		textFieldMA = new JTextField();
 		textFieldMA.setEnabled(false);
 		textFieldMA.setColumns(10);
-		textFieldMA.setBounds(66, 79, 28, 20);
+		textFieldMA.setBounds(66, 64, 28, 20);
 		panel.add(textFieldMA);
 		
 		JLabel label_3 = new JLabel(":");
 		label_3.setFont(new Font("Tahoma", Font.PLAIN, 18));
-		label_3.setBounds(49, 75, 18, 22);
+		label_3.setBounds(49, 60, 18, 22);
 		panel.add(label_3);
 		
 		textFieldHA = new JTextField();
 		textFieldHA.setEnabled(false);
 		textFieldHA.setColumns(10);
-		textFieldHA.setBounds(11, 79, 28, 20);
+		textFieldHA.setBounds(11, 64, 28, 20);
 		panel.add(textFieldHA);
 		
 		btnAlterar = new JButton("Alterar");
@@ -146,7 +148,7 @@ public class RelogioGUI {
 			}
 		});
 		btnAlterar.setEnabled(false);
-		btnAlterar.setBounds(11, 122, 89, 23);
+		btnAlterar.setBounds(11, 95, 89, 23);
 		panel.add(btnAlterar);
 		
 		btnIniciarConectar = new JButton("Iniciar/Conectar");
@@ -213,7 +215,25 @@ public class RelogioGUI {
 		btnAtualizar.setBounds(10, 46, 89, 23);
 		panel_1.add(btnAtualizar);
 		
-		ThreadAtualizaGUI threadAtualiza = new ThreadAtualizaGUI(lblH,lblM,lblS);
+		
+		
+		JLabel lblIdN = new JLabel("Seu ID:");
+		lblIdN.setBounds(326, 192, 46, 14);
+		panel.add(lblIdN);
+		
+		lblId = new JLabel("0");
+		lblId.setBounds(381, 192, 18, 14);
+		panel.add(lblId);
+		
+		JLabel lblReferencia = new JLabel("Referencia: ");
+		lblReferencia.setBounds(157, 11, 59, 14);
+		panel.add(lblReferencia);
+		
+		labelIdReferencia = new JLabel("0");
+		labelIdReferencia.setBounds(223, 11, 28, 14);
+		panel.add(labelIdReferencia);
+		
+		ThreadAtualizaGUI threadAtualiza = new ThreadAtualizaGUI(lblH,lblM,lblS,lblId,labelIdReferencia);
 		threadAtualiza.start();
 		
 	}
