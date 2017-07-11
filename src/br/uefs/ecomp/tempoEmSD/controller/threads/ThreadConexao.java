@@ -11,13 +11,12 @@ import java.util.regex.Pattern;
 
 import br.uefs.ecomp.tempoEmSD.controller.ControllerRelogio;
 
-public class ThreadRecebeTempo extends Thread {
-
+public class ThreadConexao extends Thread {
 	private String msgR;
 	private ControllerRelogio controller;
 	private String ip;
 
-	public ThreadRecebeTempo(String ip){
+	public ThreadConexao(String ip){
 		controller = ControllerRelogio.getInstance();
 		setMsgR("");
 		this.ip = ip;
@@ -39,14 +38,14 @@ public class ThreadRecebeTempo extends Thread {
 				this.msgR = msg;
 				//System.out.println("Mensagem recebida " + msg + " de " + dgram.getAddress());
 				dgram.setLength(b.length); 
-				
+
 				String informacoes[] = msg.split(Pattern.quote(":"));
 				controller.setUltimaH(Integer.parseInt(informacoes[0]));
 				controller.setUltimoM(Integer.parseInt(informacoes[1]));
 				controller.setUltimoS(Double.parseDouble(informacoes[2]));
 				controller.setIdReferencia(Integer.parseInt(informacoes[3]));
 				controller.setBufferCheio(true);
-				
+
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -87,5 +86,6 @@ public class ThreadRecebeTempo extends Thread {
 	public void setMsgR(String msgR) {
 		this.msgR = msgR;
 	}
+
 
 }

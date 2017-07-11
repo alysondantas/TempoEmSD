@@ -23,12 +23,12 @@ public class ThreadTempo extends Thread  {
 			timer = new Timer();
 
 			TimerTask tarefa = new TimerTask() {  
-				int cont = 0;
+				double cont = 0.0;
 				public void run()   
 				{      
 					cont = controller.getSegundos();
-					if(cont == 59){
-						cont = 0;
+					if(cont > 58){
+						cont = 0 + controller.getDrift();
 						if(controller.getMinutos() == 59){
 							controller.setMinutos(0);
 							if(controller.getHoras() == 23){
@@ -42,12 +42,12 @@ public class ThreadTempo extends Thread  {
 						}
 					}else{
 
-						cont++;
+						cont = cont + 0.1;
+						cont = cont + controller.getDrift();
 					}
-
 					controller.setSegundos(cont);
-					System.out.println("tempo " +controller.getHoras() + " : " + controller.getMinutos() + " : " + cont);
-					cont = cont +1;
+					//System.out.println("tempo " +controller.getHoras() + " : " + controller.getMinutos() + " : " + cont);
+					cont = cont + 0.1;
 
 					/*try {      
 							System.out.println("Hora: "+format.format(new Date().getTime()));      
@@ -56,7 +56,7 @@ public class ThreadTempo extends Thread  {
 						} */     
 				}   
 			};      
-			timer.scheduleAtFixedRate(tarefa, 0, 1000);      
+			timer.scheduleAtFixedRate(tarefa, 0, 100);      
 			
 		}    
 	}

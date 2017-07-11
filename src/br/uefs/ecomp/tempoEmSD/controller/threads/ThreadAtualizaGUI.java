@@ -27,7 +27,7 @@ public class ThreadAtualizaGUI extends Thread {
 			//atualiza hora/minuto/segundo
 			int horas = controller.getHoras();
 			int minutos = controller.getMinutos();
-			int segundos = controller.getSegundos();
+			int segundos = (int) controller.getSegundos();
 			int id = controller.getId();
 			String sHoras;
 			if(horas<10){

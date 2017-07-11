@@ -5,6 +5,7 @@ import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadRecebeTempo;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Random;
+import java.util.regex.Pattern;
 
 import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadEnviaTempo;
 import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadTempo;
@@ -12,11 +13,11 @@ import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadVerificaTempo;
 
 public class ControllerRelogio {
 	private static ControllerRelogio unicaInstancia;
-	private int segundos;
+	private double segundos;
 	private int minutos;
 	private int horas;
 	private int ultimoM;
-	private int ultimoS;
+	private double ultimoS;
 	private int ultimaH;
 	private ThreadRecebeTempo threadConexao;
 	private ThreadEnviaTempo threadEnvia;
@@ -26,16 +27,21 @@ public class ControllerRelogio {
 	private boolean souReferencia;
 	private int id;
 	private boolean bufferCheio;
+	private double drift;
+	private String ip1;
+	private String ip2;
 	
 	/**
 	 * Construtor
 	 */
 	private ControllerRelogio(){
 		segundos = 0;
+		ip1 = "233.4.5.6";
+		ip2 = "233.4.5.7";
 		setMinutos(0);
 		setHoras(0);
 		setBufferCheio(false);
-		
+		drift = 0.0;
 		//gera id
 		id = 0;
 		SimpleDateFormat sdfh = new SimpleDateFormat("HH");
@@ -83,7 +89,7 @@ public class ControllerRelogio {
 	}
 	
 	public void iniciaContador(){
-		threadConexao = new ThreadRecebeTempo();
+		threadConexao = new ThreadRecebeTempo(ip1);
 		threadConexao.start();
 		
 		verificaPrimeiro();
@@ -117,18 +123,18 @@ public class ControllerRelogio {
 		}
 		if(primeiro == true){
 			setSouReferencia(true);
-			threadEnvia = new ThreadEnviaTempo();
+			threadEnvia = new ThreadEnviaTempo(ip1);
 			threadEnvia.start();
 			System.out.println("Sou o primeiro");
 		}
 		
 	}
 
-	public int getSegundos() {
+	public double getSegundos() {
 		return segundos;
 	}
 
-	public void setSegundos(int segundos) {
+	public void setSegundos(double segundos) {
 		this.segundos = segundos;
 	}
 
@@ -166,11 +172,11 @@ public class ControllerRelogio {
 		this.ultimoM = ultimoM;
 	}
 
-	public int getUltimoS() {
+	public double getUltimoS() {
 		return ultimoS;
 	}
 
-	public void setUltimoS(int ultimoS) {
+	public void setUltimoS(double ultimoS) {
 		this.ultimoS = ultimoS;
 	}
 
@@ -204,6 +210,25 @@ public class ControllerRelogio {
 
 	public void setBufferCheio(boolean bufferCheio) {
 		this.bufferCheio = bufferCheio;
+	}
+
+	public double getDrift() {
+		return drift;
+	}
+
+	public void setDrift(double drift) {
+		this.drift = drift;
+	}
+	
+	public void setIp(String ip){
+		this.ip1 = ip;
+		String aux[] = ip.split(Pattern.quote("."));
+		int i = Integer.parseInt(aux[3]);
+		i++;
+		String ipaux = aux[0] + "." + aux[1] + "." + aux[2] + "." + i; 
+		System.out.println("Novo ip do canal 1 é" + ip);
+		System.out.println("Novo ip do canal 2 é: " + ipaux);
+		this.ip2 = ipaux;
 	}
 	
 }

@@ -7,7 +7,7 @@ public class ThreadVerificaTempo extends Thread {
 	private ControllerRelogio controller;
 	private int tmpH;
 	private int tmpM;
-	private int tmpS;
+	private double tmpS;
 	private int cont;
 	
 	public ThreadVerificaTempo(){

@@ -12,9 +12,11 @@ import br.uefs.ecomp.tempoEmSD.controller.ControllerRelogio;
 public class ThreadEnviaTempo extends Thread  {
 
 	private ControllerRelogio controller;
-
-	public ThreadEnviaTempo(){
+	private String ip;
+	
+	public ThreadEnviaTempo(String ip){
 		controller = ControllerRelogio.getInstance();
+		this.ip = ip;
 	}
 
 	@Override
@@ -30,7 +32,7 @@ public class ThreadEnviaTempo extends Thread  {
 					byte[] b = s.getBytes();
 					DatagramPacket dgram;
 
-					dgram = new DatagramPacket(b, b.length, InetAddress.getByName("233.4.5.6"), 4545);
+					dgram = new DatagramPacket(b, b.length, InetAddress.getByName(ip), 4545);
 
 					//System.err.println("Enviando atualização de tempo: " + s + " com " + b.length + " bytes para " + dgram.getAddress() + " : " + dgram.getPort());
 					socket.send(dgram);

@@ -25,10 +25,10 @@ public class RelogioGUI {
 	private JTextField textFieldSA;
 	private JTextField textFieldMA;
 	private JTextField textFieldHA;
-	private JTextField textField_4;
-	private JTextField textField_5;
+	private JTextField textFieldIP;
 	private JButton btnIniciarConectar;
 	private JButton btnAlterar;
+	private JButton button;
 	private JLabel lblH;
 	private JLabel lblM;
 	private JLabel lblS;
@@ -93,10 +93,18 @@ public class RelogioGUI {
 		tabbedPane.addTab("Relogio", null, panel, null);
 		panel.setLayout(null);
 		
-		JButton button = new JButton("Alterar");
+		button = new JButton("Alterar");
 		button.setEnabled(false);
 		button.setBounds(310, 96, 89, 23);
 		panel.add(button);
+		button.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent arg0) {
+				// TODO Auto-generated method stub
+				alteraDrift();
+			}
+		});
 		
 		textField = new JTextField();
 		textField.setEnabled(false);
@@ -193,25 +201,22 @@ public class RelogioGUI {
 		tabbedPane.addTab("Configurações", null, panel_1, null);
 		panel_1.setLayout(null);
 		
-		JLabel lblIp = new JLabel("IP:");
-		lblIp.setBounds(10, 11, 23, 14);
+		JLabel lblIp = new JLabel("MultiCast:");
+		lblIp.setBounds(10, 11, 54, 14);
 		panel_1.add(lblIp);
 		
-		textField_4 = new JTextField();
-		textField_4.setBounds(31, 8, 86, 20);
-		panel_1.add(textField_4);
-		textField_4.setColumns(10);
+		textFieldIP = new JTextField();
+		textFieldIP.setText("233.4.5.6");
+		textFieldIP.setBounds(64, 8, 96, 20);
+		panel_1.add(textFieldIP);
+		textFieldIP.setColumns(10);
 		
-		JLabel lblPorta = new JLabel("Porta:");
-		lblPorta.setBounds(127, 11, 40, 14);
-		panel_1.add(lblPorta);
-		
-		textField_5 = new JTextField();
-		textField_5.setBounds(166, 8, 86, 20);
-		panel_1.add(textField_5);
-		textField_5.setColumns(10);
-		
-		JButton btnAtualizar = new JButton("Atualizar");
+		JButton btnAtualizar = new JButton("Definir");
+		btnAtualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				atualizaMulticast();
+			}
+		});
 		btnAtualizar.setBounds(10, 46, 89, 23);
 		panel_1.add(btnAtualizar);
 		
@@ -246,6 +251,8 @@ public class RelogioGUI {
 		textFieldMA.setEnabled(true);
 		textFieldSA.setEnabled(true);
 		btnAlterar.setEnabled(true);
+		textField.setEnabled(true);
+		button.setEnabled(true);
 		
 	}
 	
@@ -277,5 +284,17 @@ public class RelogioGUI {
 				e.printStackTrace();
 			}
 		}
+	}
+	
+	public void alteraDrift(){
+		if(!textField.getText().equals("")){
+			double drift = Double.parseDouble(textField.getText());
+			System.err.println("novo drift inserido: " + textField.getText());
+			controller.setDrift(drift);
+		}
+	}
+	
+	public void atualizaMulticast(){
+		controller.setIp(textFieldIP.getText());
 	}
 }
