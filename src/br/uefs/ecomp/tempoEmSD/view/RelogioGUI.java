@@ -34,6 +34,7 @@ public class RelogioGUI {
 	private JLabel lblS;
 	private JLabel lblId;
 	private JLabel labelIdReferencia;
+	private JButton btnAtualizar;
 	private ControllerRelogio controller = ControllerRelogio.getInstance();
 
 
@@ -211,7 +212,7 @@ public class RelogioGUI {
 		panel_1.add(textFieldIP);
 		textFieldIP.setColumns(10);
 		
-		JButton btnAtualizar = new JButton("Definir");
+		btnAtualizar = new JButton("Definir");
 		btnAtualizar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				atualizaMulticast();
@@ -244,16 +245,16 @@ public class RelogioGUI {
 	}
 	
 	public void inicia(){
-		
 		controller.iniciaContador();
 		btnIniciarConectar.setEnabled(false);
+		btnAtualizar.setEnabled(false);
+		textFieldIP.setEnabled(false);
 		textFieldHA.setEnabled(true);
 		textFieldMA.setEnabled(true);
 		textFieldSA.setEnabled(true);
 		btnAlterar.setEnabled(true);
 		textField.setEnabled(true);
 		button.setEnabled(true);
-		
 	}
 	
 	public void alterar(){

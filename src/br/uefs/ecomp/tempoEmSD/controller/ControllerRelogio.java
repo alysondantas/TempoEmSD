@@ -7,6 +7,9 @@ import java.util.Date;
 import java.util.Random;
 import java.util.regex.Pattern;
 
+import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadAlterarReferencial;
+import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadConexao;
+import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadEleitor;
 import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadEnviaTempo;
 import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadTempo;
 import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadVerificaTempo;
@@ -19,10 +22,13 @@ public class ControllerRelogio {
 	private int ultimoM;
 	private double ultimoS;
 	private int ultimaH;
-	private ThreadRecebeTempo threadConexao;
+	private ThreadRecebeTempo threadRecebe;
+	private ThreadConexao threadConexao;
 	private ThreadEnviaTempo threadEnvia;
 	private ThreadTempo threadTempo;
+	private ThreadEleitor threadEleitor;
 	private ThreadVerificaTempo threadVerifica;
+	private ThreadAlterarReferencial threadAReferencial;
 	private int idReferencia;
 	private boolean souReferencia;
 	private int id;
@@ -30,12 +36,14 @@ public class ControllerRelogio {
 	private double drift;
 	private String ip1;
 	private String ip2;
+	private boolean contaSozinho;
 	
 	/**
 	 * Construtor
 	 */
 	private ControllerRelogio(){
 		segundos = 0;
+		setContaSozinho(false);
 		ip1 = "233.4.5.6";
 		ip2 = "233.4.5.7";
 		setMinutos(0);
@@ -65,7 +73,7 @@ public class ControllerRelogio {
         	id = id / 105;
         	System.err.println("dividindo id por " + 105);
         }
-		setSouReferencia(false);
+		souReferencia = false;
 		
 	}
 	
@@ -89,14 +97,20 @@ public class ControllerRelogio {
 	}
 	
 	public void iniciaContador(){
-		threadConexao = new ThreadRecebeTempo(ip1);
-		threadConexao.start();
-		
+		threadRecebe = new ThreadRecebeTempo(ip1);
+		threadRecebe.start();
+		threadEnvia = new ThreadEnviaTempo(ip1);
 		verificaPrimeiro();
-		threadVerifica = new ThreadVerificaTempo();
+		threadEleitor = new ThreadEleitor();
+		threadAReferencial = new ThreadAlterarReferencial();
+		threadConexao = new ThreadConexao(ip2, threadEleitor, threadAReferencial);
+		threadConexao.start();
+		threadEleitor.setConexao(threadConexao);
+		threadVerifica = new ThreadVerificaTempo(threadConexao);
 		threadVerifica.start();
 		threadTempo = new ThreadTempo();
 		threadTempo.start();
+		
 		
 	}
 	
@@ -107,7 +121,7 @@ public class ControllerRelogio {
 		
 		while(cont>1){
 			System.out.println("Perguntou se é o primeiro");
-			msg = threadConexao.getMsgR();
+			msg = threadRecebe.getMsgR();
 			if(!msg.equals("")){
 				System.out.println("Tem alguem na sessão");
 				primeiro = false;
@@ -122,8 +136,8 @@ public class ControllerRelogio {
 				}
 		}
 		if(primeiro == true){
-			setSouReferencia(true);
-			threadEnvia = new ThreadEnviaTempo(ip1);
+			souReferencia = true;
+			
 			threadEnvia.start();
 			System.out.println("Sou o primeiro");
 		}
@@ -200,9 +214,9 @@ public class ControllerRelogio {
 		return souReferencia;
 	}
 
-	public void setSouReferencia(boolean souReferencia) {
+	/*public void setSouReferencia(boolean souReferencia) {
 		this.souReferencia = souReferencia;
-	}
+	}*/
 
 	public boolean isBufferCheio() {
 		return bufferCheio;
@@ -229,6 +243,38 @@ public class ControllerRelogio {
 		System.out.println("Novo ip do canal 1 é" + ip);
 		System.out.println("Novo ip do canal 2 é: " + ipaux);
 		this.ip2 = ipaux;
+	}
+
+	public boolean isContaSozinho() {
+		return contaSozinho;
+	}
+
+	public void setContaSozinho(boolean contaSozinho) {
+		this.contaSozinho = contaSozinho;
+	}
+	public void ocorreuNovaEleicao(String novoReferencial){
+		int novoR = Integer.parseInt(novoReferencial);
+		System.out.println("Novo referencial é " + novoR);
+		threadEleitor = new ThreadEleitor();
+		threadAReferencial = new ThreadAlterarReferencial();
+		if(id == novoR){
+			souReferencia = true;
+			System.out.println("Sou referencia" + souReferencia);
+			if(!threadEnvia.isAlive()){
+				threadEnvia.start();
+			}
+			
+		}else{
+			souReferencia = false;
+		}
+		idReferencia = novoR;
+		System.out.println("Colocou o novo referencial : " + idReferencia);
+		contaSozinho = false;
+		bufferCheio = false;
+		threadConexao.setThreadEleitor(threadEleitor);
+		threadConexao.setThreadReferencial(threadAReferencial);
+		threadEleitor.setConexao(threadConexao);
+		
 	}
 	
 }

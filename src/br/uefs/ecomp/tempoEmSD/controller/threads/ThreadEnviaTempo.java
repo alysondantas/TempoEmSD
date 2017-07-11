@@ -22,7 +22,8 @@ public class ThreadEnviaTempo extends Thread  {
 	@Override
 	public void run(){
 		while(true){
-			if(controller.isSouReferencia()){
+			System.err.println("");
+			if(controller.isSouReferencia() || controller.getIdReferencia() == controller.getId()){
 				DatagramSocket socket;
 				try {
 					socket = new DatagramSocket();
@@ -36,7 +37,7 @@ public class ThreadEnviaTempo extends Thread  {
 
 					//System.err.println("Enviando atualização de tempo: " + s + " com " + b.length + " bytes para " + dgram.getAddress() + " : " + dgram.getPort());
 					socket.send(dgram);
-
+					
 					Thread.sleep(250);//thread dorme em quanto estiver sincronizando por 1/4 segundo
 				} catch (SocketException e) {
 					// TODO Auto-generated catch block
