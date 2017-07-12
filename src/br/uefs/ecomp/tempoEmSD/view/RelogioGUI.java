@@ -288,7 +288,7 @@ public class RelogioGUI {
 		if(!hora.equals("")){
 			try{
 				int h = Integer.parseInt(hora);
-				if(h<24 && h>0){
+				if(h<24 && h>-1){
 					controller.setHoras(h);
 				}else{
 					JOptionPane.showMessageDialog(null,"Numero invalido","Erro",2);	
@@ -300,7 +300,7 @@ public class RelogioGUI {
 		if(!minuto.equals("")){
 			try{
 				int m = Integer.parseInt(minuto);
-				if(m>0 && m<60){
+				if(m>-1 && m<60){
 					controller.setMinutos(m);
 				}else{
 					JOptionPane.showMessageDialog(null,"Numero invalido","Erro",2);	
@@ -312,7 +312,7 @@ public class RelogioGUI {
 		if(!segundo.equals("")){
 			try{
 				int s = Integer.parseInt(segundo);
-				if(s>0 && s<60){
+				if(s>-1 && s<60){
 					controller.setSegundos(s);
 				}else{
 					JOptionPane.showMessageDialog(null,"Numero invalido","Erro",2);	

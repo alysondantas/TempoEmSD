@@ -252,10 +252,16 @@ public class ControllerRelogio {
 	public void setContaSozinho(boolean contaSozinho) {
 		this.contaSozinho = contaSozinho;
 	}
+	
+	@SuppressWarnings("deprecation")
 	public void ocorreuNovaEleicao(String novoReferencial){
 		int novoR = Integer.parseInt(novoReferencial);
 		System.out.println("Novo referencial é " + novoR);
+		//threadEleitor.stop();
+		//threadEleitor.interrupt();
 		threadEleitor = new ThreadEleitor();
+		//threadAReferencial.stop();
+		//threadAReferencial.interrupt();
 		threadAReferencial = new ThreadAlterarReferencial();
 		if(id == novoR){
 			souReferencia = true;

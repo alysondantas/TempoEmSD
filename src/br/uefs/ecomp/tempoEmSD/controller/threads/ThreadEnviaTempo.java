@@ -22,7 +22,16 @@ public class ThreadEnviaTempo extends Thread  {
 	@Override
 	public void run(){
 		while(true){
-			System.err.println("");
+			//System.err.println("");
+			//Caso a thread seja interrompida ela lançara uma exceção
+			if (Thread.interrupted()){
+				try {
+					throw new InterruptedException();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
 			if(controller.isSouReferencia() || controller.getIdReferencia() == controller.getId()){
 				DatagramSocket socket;
 				try {
