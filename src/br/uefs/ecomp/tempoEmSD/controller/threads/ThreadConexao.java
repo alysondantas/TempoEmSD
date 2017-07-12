@@ -59,26 +59,27 @@ public class ThreadConexao extends Thread {
 					case "1":
 						//System.out.println("Novo tempo recebido " + informacoes[2] + " de: " + informacoes[0]);
 						threadEleitor.addTempo(informacoes[2] + ":" + informacoes[0]);
-						if(threadEleitor.isAlive()){
+						threadEleitor.setExecutando(true);
+						/*if(threadEleitor.isAlive()){
 							System.out.println("thread eleitor rodando");
-							/*if(!threadEleitor.isExecutando()){
-								threadEleitor.run();
-							}*/
+							
 						}else{
 							threadEleitor.start();
 							System.out.println("thread eleitor iniciada");
-						}
+						}*/
 						
 						break;
 					case "2":
 						System.out.println("Recebido novo eleito por " + informacoes[0] + " é " + informacoes[2]);
 						threadReferencial.addNovaEleicao(informacoes[0] + ":" + informacoes[2]);
+						threadReferencial.setExecutando(true);
+						/*
 						if(threadReferencial.isAlive()){
 							System.out.println("thread verificacao rodando");
 						}else{
 							threadReferencial.start();
 							System.out.println("thread verificacao iniciada");
-						}
+						}*/
 						
 					}
 				//}

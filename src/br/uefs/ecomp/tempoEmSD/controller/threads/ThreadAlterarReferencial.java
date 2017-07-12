@@ -9,73 +9,95 @@ import br.uefs.ecomp.tempoEmSD.controller.ControllerRelogio;
 public class ThreadAlterarReferencial extends Thread {
 	private ControllerRelogio controller;
 	private ArrayList<String> votos;
-	
+	private boolean executando;
+
 	public ThreadAlterarReferencial(){
 		controller = ControllerRelogio.getInstance();
 		votos = new ArrayList<>();
+		executando = false;
 	}
-	
+
 
 
 	@Override
 	public void run(){
-		//while(true){
-		//if(contar){//permite comçar a verificar a eleição
-		System.out.println("começou a verificar votação");
-		int cont = 0;
-		int verificador = votos.size();
-		//verifica se add algum novo tempo para comparar
-		while(cont < 10){
-			int verifica = votos.size();
-			if(verifica != verificador){//se add ele não deve começar a eleição ainda
-				verificador = verifica;
-				cont = 0;
-			}else{
-				cont++;
+		while(true){
+
+			if (Thread.interrupted()){
+				try {
+					throw new InterruptedException();
+				} catch (InterruptedException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
 			}
 
+			if(executando){//permite comçar a verificar a eleição
+				System.out.println("começou a verificar votação");
+				int cont = 0;
+				int verificador = votos.size();
+				//verifica se add algum novo tempo para comparar
+				while(cont < 10){
+					int verifica = votos.size();
+					if(verifica != verificador){//se add ele não deve começar a eleição ainda
+						verificador = verifica;
+						cont = 0;
+					}else{
+						cont++;
+					}
+
+					try {
+						Thread.sleep(200);//dorme thread por 200 mls
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+				}
+
+				Iterator<String> itera = votos.iterator();
+				String aux = "";
+				String informacoes[];
+				String aux2 = "";
+				String aux3 = "";
+				cont = 0;
+				while(itera.hasNext()){
+					aux = itera.next();
+					informacoes =  aux.split(Pattern.quote(":"));
+					if(aux2.equals("")){
+						aux2 = informacoes[1];
+						cont++;
+					}else if(aux2.equals(informacoes[1])){
+						cont++;
+					}else{
+						System.out.println("divergencia em voto: " + aux3);
+						aux3 = informacoes[1];
+					}
+				}
+
+				if(cont == votos.size()){
+					System.out.println("Eleição ocorreu com sucesso, sem divergencias novo eleito é " + aux2 + " votos: " + votos.size());
+				}else{
+					System.out.println("Houve divergencia na eleição eleito com maior quantidade de votos " + aux2 + " voto divergente foi para " + aux3);
+				}
+
+
+				controller.ocorreuNovaEleicao(aux2);
+
+				votos = new ArrayList<>();
+				executando = false;
+
+			}
 			try {
-				Thread.sleep(200);//dorme thread por 200 mls
+				Thread.sleep(500);
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
 		}
-
-		Iterator<String> itera = votos.iterator();
-		String aux = "";
-		String informacoes[];
-		String aux2 = "";
-		String aux3 = "";
-		cont = 0;
-		while(itera.hasNext()){
-			aux = itera.next();
-			informacoes =  aux.split(Pattern.quote(":"));
-				if(aux2.equals("")){
-					aux2 = informacoes[1];
-					cont++;
-				}else if(aux2.equals(informacoes[1])){
-					cont++;
-				}else{
-					System.out.println("divergencia em voto: " + aux3);
-					aux3 = informacoes[1];
-				}
-			}
-		
-		if(cont == votos.size()){
-			System.out.println("Eleição ocorreu com sucesso, sem divergencias novo eleito é " + aux2 + " votos: " + votos.size());
-		}else{
-			System.out.println("Houve divergencia na eleição eleito com maior quantidade de votos " + aux2 + " voto divergente foi para " + aux3);
-		}
-
-
-		controller.ocorreuNovaEleicao(aux2);
-		
-		//contar = false;
-
-		//}
-		//}
 	}
+
+
 
 	public void addNovaEleicao(String s){
 		String aux;
@@ -92,6 +114,14 @@ public class ThreadAlterarReferencial extends Thread {
 			System.out.println("Adicionando novo voto para comparar");
 			votos.add(s);
 		}
+	}
+
+	public void setExecutando(boolean exe){
+		executando = exe;
+	}
+
+	public boolean isExecutando(){
+		return executando;
 	}
 
 }

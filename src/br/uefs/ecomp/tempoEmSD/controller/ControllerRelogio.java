@@ -102,7 +102,9 @@ public class ControllerRelogio {
 		threadEnvia = new ThreadEnviaTempo(ip1);
 		verificaPrimeiro();
 		threadEleitor = new ThreadEleitor();
+		threadEleitor.start();
 		threadAReferencial = new ThreadAlterarReferencial();
+		threadAReferencial.start();
 		threadConexao = new ThreadConexao(ip2, threadEleitor, threadAReferencial);
 		threadConexao.start();
 		threadEleitor.setConexao(threadConexao);
@@ -144,6 +146,62 @@ public class ControllerRelogio {
 		
 	}
 
+	public boolean isBufferCheio() {
+		return bufferCheio;
+	}
+
+	public void setBufferCheio(boolean bufferCheio) {
+		this.bufferCheio = bufferCheio;
+	}
+
+	public double getDrift() {
+		return drift;
+	}
+
+	public void setDrift(double drift) {
+		this.drift = drift;
+	}
+	
+	public void setIp(String ip){
+		this.ip1 = ip;
+		String aux[] = ip.split(Pattern.quote("."));
+		int i = Integer.parseInt(aux[3]);
+		i++;
+		String ipaux = aux[0] + "." + aux[1] + "." + aux[2] + "." + i; 
+		System.out.println("Novo ip do canal 1 é" + ip);
+		System.out.println("Novo ip do canal 2 é: " + ipaux);
+		this.ip2 = ipaux;
+	}
+	
+	public void ocorreuNovaEleicao(String novoReferencial){
+		int novoR = Integer.parseInt(novoReferencial);
+		System.out.println("Novo referencial é " + novoR);
+		//threadEleitor = new ThreadEleitor();
+		//threadAReferencial = new ThreadAlterarReferencial();
+		if(id == novoR){
+			souReferencia = true;
+			System.out.println("Sou referencia" + souReferencia);
+			if(!threadEnvia.isAlive()){
+				threadEnvia.start();
+			}
+			
+		}else{
+			souReferencia = false;
+		}
+		idReferencia = novoR;
+		System.out.println("Colocou o novo referencial : " + idReferencia);
+		contaSozinho = false;
+		bufferCheio = false;
+		//threadConexao.setThreadEleitor(threadEleitor);
+		//threadConexao.setThreadReferencial(threadAReferencial);
+		//threadEleitor.setConexao(threadConexao);
+		
+	}
+	
+	public void setId(int idN){
+		id = idN;
+	}
+	
 	public double getSegundos() {
 		return segundos;
 	}
@@ -213,78 +271,13 @@ public class ControllerRelogio {
 	public boolean isSouReferencia() {
 		return souReferencia;
 	}
-
-	/*public void setSouReferencia(boolean souReferencia) {
-		this.souReferencia = souReferencia;
-	}*/
-
-	public boolean isBufferCheio() {
-		return bufferCheio;
-	}
-
-	public void setBufferCheio(boolean bufferCheio) {
-		this.bufferCheio = bufferCheio;
-	}
-
-	public double getDrift() {
-		return drift;
-	}
-
-	public void setDrift(double drift) {
-		this.drift = drift;
-	}
 	
-	public void setIp(String ip){
-		this.ip1 = ip;
-		String aux[] = ip.split(Pattern.quote("."));
-		int i = Integer.parseInt(aux[3]);
-		i++;
-		String ipaux = aux[0] + "." + aux[1] + "." + aux[2] + "." + i; 
-		System.out.println("Novo ip do canal 1 é" + ip);
-		System.out.println("Novo ip do canal 2 é: " + ipaux);
-		this.ip2 = ipaux;
-	}
-
 	public boolean isContaSozinho() {
 		return contaSozinho;
 	}
 
 	public void setContaSozinho(boolean contaSozinho) {
 		this.contaSozinho = contaSozinho;
-	}
-	
-	@SuppressWarnings("deprecation")
-	public void ocorreuNovaEleicao(String novoReferencial){
-		int novoR = Integer.parseInt(novoReferencial);
-		System.out.println("Novo referencial é " + novoR);
-		//threadEleitor.stop();
-		//threadEleitor.interrupt();
-		threadEleitor = new ThreadEleitor();
-		//threadAReferencial.stop();
-		//threadAReferencial.interrupt();
-		threadAReferencial = new ThreadAlterarReferencial();
-		if(id == novoR){
-			souReferencia = true;
-			System.out.println("Sou referencia" + souReferencia);
-			if(!threadEnvia.isAlive()){
-				threadEnvia.start();
-			}
-			
-		}else{
-			souReferencia = false;
-		}
-		idReferencia = novoR;
-		System.out.println("Colocou o novo referencial : " + idReferencia);
-		contaSozinho = false;
-		bufferCheio = false;
-		threadConexao.setThreadEleitor(threadEleitor);
-		threadConexao.setThreadReferencial(threadAReferencial);
-		threadEleitor.setConexao(threadConexao);
-		
-	}
-	
-	public void setId(int idN){
-		id = idN;
 	}
 	
 }

@@ -94,7 +94,7 @@ public class ThreadVerificaTempo extends Thread {
 						controller.setMinutos(tmpM);
 						controller.setSegundos(tmpS);
 					}else{
-						System.out.println("Erro de sincronia tempo incorreto meu tempo" +meuS + " & " + tmpS);
+						System.out.println("Erro de sincronia tempo incorreto meu tempo " +meuS + " & " + tmpS);
 						threadConexao.sendTo(controller.getId() + "$" + "0");
 						controller.setContaSozinho(true);
 					}
