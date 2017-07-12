@@ -277,4 +277,8 @@ public class ControllerRelogio {
 		
 	}
 	
+	public void setId(int idN){
+		id = idN;
+	}
+	
 }

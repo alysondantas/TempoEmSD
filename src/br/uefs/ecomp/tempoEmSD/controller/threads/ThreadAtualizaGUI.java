@@ -12,13 +12,15 @@ public class ThreadAtualizaGUI extends Thread {
 	private JLabel lblS;
 	private JLabel lblId;
 	private JLabel lblIdR;
+	private JLabel lblDrift;
 	
-	public ThreadAtualizaGUI(JLabel lblH, JLabel lblM, JLabel lblS,JLabel lblId, JLabel labelIdReferencia){
+	public ThreadAtualizaGUI(JLabel lblH, JLabel lblM, JLabel lblS,JLabel lblId, JLabel labelIdReferencia, JLabel lblDrift){
 		this.lblH = lblH;
 		this.lblM = lblM;
 		this.lblS = lblS;
 		this.lblId = lblId;
 		this.lblIdR = labelIdReferencia;
+		this.lblDrift = lblDrift;
 	}
 	
 	@Override
@@ -56,6 +58,8 @@ public class ThreadAtualizaGUI extends Thread {
 			
 			lblId.setText(id + "");
 			lblIdR.setText(idR + "");
+			
+			lblDrift.setText("" + controller.getDrift());
 			
 			try {
 				Thread.sleep(200);//demora meio minuto para atualizar novamente
