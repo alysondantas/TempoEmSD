@@ -14,6 +14,11 @@ import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadEnviaTempo;
 import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadTempo;
 import br.uefs.ecomp.tempoEmSD.controller.threads.ThreadVerificaTempo;
 
+/**
+ * 
+ * @author Alyson Dantas
+ *
+ */
 public class ControllerRelogio {
 	private static ControllerRelogio unicaInstancia;
 	private double segundos;
@@ -32,10 +37,10 @@ public class ControllerRelogio {
 	private int idReferencia;
 	private boolean souReferencia;
 	private int id;
-	private boolean bufferCheio;
+	private boolean bufferCheio;//buffer atualização de tempo
 	private double drift;
-	private String ip1;
-	private String ip2;
+	private String ip1;//ip do canal1
+	private String ip2;//ip do canal2
 	private boolean contaSozinho;
 	
 	/**
@@ -78,7 +83,7 @@ public class ControllerRelogio {
 	}
 	
 	/**
-	 * controla o instanciamento de objetos Controller
+	 * Controla o instanciamento de objetos Controller
 	 *
 	 * @return unicaInstancia
 	 */
@@ -90,12 +95,15 @@ public class ControllerRelogio {
 	}
 
 	/**
-	 * reseta o objeto Controller ja instanciado
+	 * Reseta o objeto Controller ja instanciado
 	 */
 	public static void zerarSingleton() {
 		unicaInstancia = null;
 	}
 	
+	/**
+	 * Metodo que inicia o contador incluindo as threads
+	 */
 	public void iniciaContador(){
 		threadRecebe = new ThreadRecebeTempo(ip1);
 		threadRecebe.start();
@@ -112,10 +120,11 @@ public class ControllerRelogio {
 		threadVerifica.start();
 		threadTempo = new ThreadTempo();
 		threadTempo.start();
-		
-		
 	}
 	
+	/**
+	 * Metodo que verifica se é o primeiro
+	 */
 	public void verificaPrimeiro(){
 		int cont = 10;
 		String msg = "";
@@ -123,7 +132,7 @@ public class ControllerRelogio {
 		
 		while(cont>1){
 			System.out.println("Perguntou se é o primeiro");
-			msg = threadRecebe.getMsgR();
+			msg = threadRecebe.getMsgR();//analisa se é o primeiro pelo canal
 			if(!msg.equals("")){
 				System.out.println("Tem alguem na sessão");
 				primeiro = false;
@@ -146,22 +155,11 @@ public class ControllerRelogio {
 		
 	}
 
-	public boolean isBufferCheio() {
-		return bufferCheio;
-	}
 
-	public void setBufferCheio(boolean bufferCheio) {
-		this.bufferCheio = bufferCheio;
-	}
-
-	public double getDrift() {
-		return drift;
-	}
-
-	public void setDrift(double drift) {
-		this.drift = drift;
-	}
-	
+	/**
+	 * Metodo que seta o novo ip
+	 * @param ip
+	 */
 	public void setIp(String ip){
 		this.ip1 = ip;
 		String aux[] = ip.split(Pattern.quote("."));
@@ -173,11 +171,13 @@ public class ControllerRelogio {
 		this.ip2 = ipaux;
 	}
 	
+	/**
+	 * Metodo que atualiza o controller apos um novo referencial
+	 * @param novoReferencial
+	 */
 	public void ocorreuNovaEleicao(String novoReferencial){
 		int novoR = Integer.parseInt(novoReferencial);
 		System.out.println("Novo referencial é " + novoR);
-		//threadEleitor = new ThreadEleitor();
-		//threadAReferencial = new ThreadAlterarReferencial();
 		if(id == novoR){
 			souReferencia = true;
 			System.out.println("Sou referencia" + souReferencia);
@@ -192,92 +192,205 @@ public class ControllerRelogio {
 		System.out.println("Colocou o novo referencial : " + idReferencia);
 		contaSozinho = false;
 		bufferCheio = false;
-		//threadConexao.setThreadEleitor(threadEleitor);
-		//threadConexao.setThreadReferencial(threadAReferencial);
-		//threadEleitor.setConexao(threadConexao);
-		
 	}
 	
+	/**
+	 * Metodo que modifica o id
+	 * @param idN
+	 */
 	public void setId(int idN){
 		id = idN;
 	}
 	
+	/**
+	 * Metodo que retorna os segundos
+	 * @return
+	 */
 	public double getSegundos() {
 		return segundos;
 	}
 
+	/**
+	 * Metodo que modifica os segundos
+	 * @param segundos
+	 */
 	public void setSegundos(double segundos) {
 		this.segundos = segundos;
 	}
 
+	/**
+	 * Metodo que retorna os minutos
+	 * @return
+	 */
 	public int getMinutos() {
 		return minutos;
 	}
 
+	/**
+	 * Metodo que modifica os minutos
+	 * @param minutos
+	 */
 	public void setMinutos(int minutos) {
 		this.minutos = minutos;
 	}
+	
+	/**
+	 * Metodo que incrementa os minutos
+	 */
 	public void incrementaMinutos(){
 		minutos++;
 	}
 
+	/**
+	 * Metodo que retorna as horas
+	 * @return
+	 */
 	public int getHoras() {
 		return horas;
 	}
 
+	/**
+	 * Metodo que modifica as horas
+	 * @param horas
+	 */
 	public void setHoras(int horas) {
 		this.horas = horas;
 	}
+	
+	/**
+	 * Metodo que incrementa as horas
+	 */
 	public void incrementaHoras(){
 		horas++;
 	}
 
+	/**
+	 * Metodo que retorna o id
+	 * @return
+	 */
 	public int getId() {
 		return id;
 	}
 
+	/**
+	 * Metodo que retorna o ultimo minuto temporario
+	 * @return
+	 */
 	public int getUltimoM() {
 		return ultimoM;
 	}
 
+	/**
+	 * Metodo que modifica o ultimo minuto
+	 * @param ultimoM
+	 */
 	public void setUltimoM(int ultimoM) {
 		this.ultimoM = ultimoM;
 	}
 
+	/**
+	 * Metodo que retorna o ultimo segundo atualizado
+	 * @return
+	 */
 	public double getUltimoS() {
 		return ultimoS;
 	}
 
+	/**
+	 * Metodo que modifica o ultimo segundo
+	 * @param ultimoS
+	 */
 	public void setUltimoS(double ultimoS) {
 		this.ultimoS = ultimoS;
 	}
 
+	/**
+	 * Metodo que retorna o ultima hora temporaria
+	 * @return
+	 */
 	public int getUltimaH() {
 		return ultimaH;
 	}
-
+	
+	/**
+	 * Metodo que modifica a ultima hora
+	 * @param ultimaH
+	 */
 	public void setUltimaH(int ultimaH) {
 		this.ultimaH = ultimaH;
 	}
 
+	/**
+	 * Metodo que retorna o id da referencia
+	 * @return
+	 */
 	public int getIdReferencia() {
 		return idReferencia;
 	}
 
+	/**
+	 * Metodo que modifica o id da referencia
+	 * @param idReferencia
+	 */
 	public void setIdReferencia(int idReferencia) {
 		this.idReferencia = idReferencia;
 	}
 
+	/**
+	 * Metodo que retorna se é a referencia
+	 * @return
+	 */
 	public boolean isSouReferencia() {
 		return souReferencia;
 	}
 	
+	/**
+	 * Metodo que retorna se está contando sozinho
+	 * @return
+	 */
 	public boolean isContaSozinho() {
 		return contaSozinho;
 	}
 
+	/**
+	 * Metodo que modifca a possibilidade de contar sozinho
+	 * @param contaSozinho
+	 */
 	public void setContaSozinho(boolean contaSozinho) {
 		this.contaSozinho = contaSozinho;
 	}
+	
+	/**
+	 * Metodo que retorna o status do buffer
+	 * @return
+	 */
+	public boolean isBufferCheio() {
+		return bufferCheio;
+	}
+
+	/**
+	 * Metodo que modifica o status do buffer
+	 * @param bufferCheio
+	 */
+	public void setBufferCheio(boolean bufferCheio) {
+		this.bufferCheio = bufferCheio;
+	}
+
+	/**
+	 * Metodo que retorna o drift
+	 * @return
+	 */
+	public double getDrift() {
+		return drift;
+	}
+
+	/**
+	 * Metodo que seta o drift
+	 * @param drift
+	 */
+	public void setDrift(double drift) {
+		this.drift = drift;
+	}
+	
 	
 }

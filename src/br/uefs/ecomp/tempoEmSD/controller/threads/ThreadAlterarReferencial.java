@@ -6,19 +6,28 @@ import java.util.regex.Pattern;
 
 import br.uefs.ecomp.tempoEmSD.controller.ControllerRelogio;
 
+/**
+ * 
+ * @author Alyson Dantas
+ *
+ */
 public class ThreadAlterarReferencial extends Thread {
 	private ControllerRelogio controller;
 	private ArrayList<String> votos;
 	private boolean executando;
 
+	/**
+	 * Construtor
+	 */
 	public ThreadAlterarReferencial(){
 		controller = ControllerRelogio.getInstance();
 		votos = new ArrayList<>();
 		executando = false;
 	}
-
-
-
+	
+	/**
+	 * Metodo run da thread
+	 */
 	@Override
 	public void run(){
 		while(true){
@@ -60,7 +69,7 @@ public class ThreadAlterarReferencial extends Thread {
 				String aux2 = "";
 				String aux3 = "";
 				cont = 0;
-				while(itera.hasNext()){
+				while(itera.hasNext()){//verifica votos
 					aux = itera.next();
 					informacoes =  aux.split(Pattern.quote(":"));
 					if(aux2.equals("")){
@@ -99,6 +108,10 @@ public class ThreadAlterarReferencial extends Thread {
 
 
 
+	/**
+	 * Meotodo que add uma nova eleição para comparar
+	 * @param s
+	 */
 	public void addNovaEleicao(String s){
 		String aux;
 		Iterator<String> itera = votos.iterator();
@@ -116,10 +129,18 @@ public class ThreadAlterarReferencial extends Thread {
 		}
 	}
 
+	/**
+	 * Metodo de setar se a thread está executando
+	 * @param exe
+	 */
 	public void setExecutando(boolean exe){
 		executando = exe;
 	}
 
+	/**
+	 * Metodo que  verifica se está executando
+	 * @return
+	 */
 	public boolean isExecutando(){
 		return executando;
 	}

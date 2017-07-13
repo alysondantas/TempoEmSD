@@ -4,10 +4,15 @@ import java.text.DecimalFormat;
 
 import br.uefs.ecomp.tempoEmSD.controller.ControllerRelogio;
 
+/**
+ * 
+ * @author Alyson Dantas
+ *
+ */
 public class ThreadVerificaTempo extends Thread {
 	
 	private ControllerRelogio controller;
-	private int tmpH;
+	private int tmpH;//variaveis temporarias de tempo
 	private int tmpM;
 	private double tmpS;
 	private int meuH;
@@ -16,6 +21,10 @@ public class ThreadVerificaTempo extends Thread {
 	private int cont;
 	private ThreadConexao threadConexao;
 	
+	/**
+	 * Construtor
+	 * @param thread
+	 */
 	public ThreadVerificaTempo(ThreadConexao thread){
 		controller = ControllerRelogio.getInstance();
 		this.tmpH = 0;
@@ -25,6 +34,9 @@ public class ThreadVerificaTempo extends Thread {
 		this.threadConexao = thread;
 	}
 	
+	/**
+	 * Metodo run
+	 */
 	@Override
 	public void run(){
 		while(true){
@@ -39,32 +51,26 @@ public class ThreadVerificaTempo extends Thread {
 					}
 				}else{
 					cont = 0;
-					tmpH = controller.getUltimaH();
-					//System.out.println("hora nova :" + tmpH);
+					tmpH = controller.getUltimaH();//obtem os horarios temporarios
 					tmpM = controller.getUltimoM();
 					tmpS = controller.getUltimoS();
-					meuH = controller.getHoras();
+					meuH = controller.getHoras();//obtem os proprios horarios
 					meuM = controller.getMinutos();
 					meuS = controller.getSegundos();
-					//System.out.println("segundo antes recebido " + meuS);
 					
+					//arredenda as variaveis para 2 casas decimais
 					DecimalFormat df = new DecimalFormat("0.##");
 					String dx = df.format(meuS);
 					dx = dx.replace(",", ".");
 					meuS = Double.parseDouble(dx);
-					
-					
-					//System.out.println("segundos depois convertido " + meuS);
 					
 					DecimalFormat df2 = new DecimalFormat("0.##");
 					String dx2 = df2.format(tmpS);
 					dx2 = dx2.replace(",", ".");
 					tmpS = Double.parseDouble(dx2);
 					
-					//System.out.println("segundos depois convertido " + meuS);
-					
-					if(tmpH > meuH){
-						controller.setBufferCheio(false);
+					if(tmpH > meuH){//comprara os tempos se for maior o temporario, o atual é atualizado
+						controller.setBufferCheio(false);//avisa que buffer esta vazio
 						controller.setHoras(tmpH);
 						controller.setMinutos(tmpM);
 						controller.setSegundos(tmpS);
@@ -93,14 +99,14 @@ public class ThreadVerificaTempo extends Thread {
 						controller.setHoras(tmpH);
 						controller.setMinutos(tmpM);
 						controller.setSegundos(tmpS);
-					}else{
+					}else{//se o proprio for maior chama sincronia
 						System.out.println("Erro de sincronia tempo incorreto meu tempo " +meuS + " & " + tmpS);
 						threadConexao.sendTo(controller.getId() + "$" + "0");
 						controller.setContaSozinho(true);
 					}
 				}
 				
-				if(cont == 5){
+				if(cont == 5){//se não houver atualização em 5 ciclos chama sincronia
 					System.err.println("Erro de sincronia precia chamar eleição tempo excedido");
 					cont = 0;
 					threadConexao.sendTo(controller.getId() + "$" + "0");

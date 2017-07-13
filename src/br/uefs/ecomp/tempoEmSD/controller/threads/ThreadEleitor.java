@@ -7,18 +7,29 @@ import java.util.regex.Pattern;
 
 import br.uefs.ecomp.tempoEmSD.controller.ControllerRelogio;
 
+/**
+ * 
+ * @author Alyson Dantas
+ *
+ */
 public class ThreadEleitor extends Thread {
 	private ControllerRelogio controller;
 	private ArrayList<String> tempos;
 	private ThreadConexao threadConexao;
 	private boolean executando;
 
+	/**
+	 * Construtor thread Eleitor
+	 */
 	public ThreadEleitor(){
 		controller = ControllerRelogio.getInstance();
 		tempos = new ArrayList<>();
 		executando = false;
 	}
 
+	/**
+	 * Metodo run
+	 */
 	@Override
 	public void run(){
 		//Caso a thread seja interrompida ela lançara uma exceção
@@ -31,10 +42,7 @@ public class ThreadEleitor extends Thread {
 					e1.printStackTrace();
 				}
 			}
-			if(executando){
-
-				//while(true){
-				//if(contar){//permite comçar a verificar a eleição
+			if(executando){//habilita execução da eleição
 				System.out.println("começou a verificar eleição");
 				int cont = 0;
 				int verificador = tempos.size();
@@ -66,9 +74,8 @@ public class ThreadEleitor extends Thread {
 				double tmpS = -1.0;
 				String eleito = "";
 
-				while(itera.hasNext()){
+				while(itera.hasNext()){//realiza verificação dos votos
 					aux = itera.next();
-					//System.out.println("o que tem no aux " + aux);
 					String informacoes[] = aux.split(Pattern.quote(":"));
 					hora = Integer.parseInt(informacoes[0]);
 					minuto = Integer.parseInt(informacoes[1]);
@@ -86,39 +93,33 @@ public class ThreadEleitor extends Thread {
 					tmpS = Double.parseDouble(dx2);
 
 
-					if(!aux.equals("")){
+					if(!aux.equals("")){//verifica se é um novo
 						if(tmpH < hora){
-							//System.out.println("Eleito novo1: " + aux);
 							eleito = aux;
 							tmpH = hora;
 							tmpM = minuto;
 							tmpS = segundo;
 						}else if(tmpH <= hora && tmpM < minuto){
-							//System.out.println("Eleito novo2: " + aux);
 							eleito = aux;
 							tmpH = hora;
 							tmpM = minuto;
 							tmpS = segundo;
 						}else if(tmpH <= hora && tmpM <= minuto && tmpS <= segundo){
-							//System.out.println("Eleito novo3: " + aux);
 							eleito = aux;
 							tmpH = hora;
 							tmpM = minuto;
 							tmpS = segundo;
 						}else if(hora == 23 && tmpH == 0){
-							//System.out.println("Eleito novo4: " + aux);
 							eleito = aux;
 							tmpH = hora;
 							tmpM = minuto;
 							tmpS = segundo;
 						}else if(minuto == 59 && tmpM == 0){
-							//System.out.println("Eleito novo5: " + aux);
 							eleito = aux;
 							tmpH = hora;
 							tmpM = minuto;
 							tmpS = segundo;
 						}else if(segundo == 59 && tmpS == 0){
-							//System.out.println("Eleito novo6: " + aux);
 							eleito = aux;
 							tmpH = hora;
 							tmpM = minuto;
@@ -133,11 +134,9 @@ public class ThreadEleitor extends Thread {
 				String s = controller.getId() + "$" + "2" + "$" + informacoes2[3];
 				System.out.println("Elegi novo referencial " + s);
 				threadConexao.sendTo(s);
-				//contar = false;
-				executando = false;
+				
+				executando = false;//desabilita a thread para não reiniciar automaticamente
 				tempos = new ArrayList<>();
-				//}
-				//}
 			}
 
 			try {
@@ -150,6 +149,10 @@ public class ThreadEleitor extends Thread {
 		}
 	}
 
+	/**
+	 * Metodo que adiciona tempo
+	 * @param s
+	 */
 	public void addTempo(String s){
 		String aux;
 		Iterator<String> itera = tempos.iterator();
@@ -167,18 +170,33 @@ public class ThreadEleitor extends Thread {
 		}
 	}
 
+	/**
+	 * Metodo que modifica thread conexao
+	 * @param thread
+	 */
 	public void setConexao(ThreadConexao thread){
 		this.threadConexao = thread;
 	}
 
+	/**
+	 * Metodo que reseta a lista de tempos
+	 */
 	public void resetTempos(){
 		tempos = new ArrayList<>();
 	}
 
+	/**
+	 * Metodo que verifica se esta sendo executado
+	 * @return
+	 */
 	public boolean isExecutando() {
 		return executando;
 	}
 
+	/**
+	 * Metodo de modificar execução
+	 * @param executando
+	 */
 	public void setExecutando(boolean executando) {
 		this.executando = executando;
 	}

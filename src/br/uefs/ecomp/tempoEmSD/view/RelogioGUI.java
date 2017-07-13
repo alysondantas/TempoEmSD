@@ -21,6 +21,11 @@ import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
 import java.awt.Color;
 
+/**
+ * 
+ * @author Alyson Dantas
+ *
+ */
 public class RelogioGUI {
 
 	private JFrame frame;
@@ -226,16 +231,16 @@ public class RelogioGUI {
 		});
 		btnAtualizar.setBounds(10, 46, 89, 23);
 		panel_1.add(btnAtualizar);
-		
+
 		JLabel lblSeuId = new JLabel("Seu ID:");
 		lblSeuId.setBounds(10, 80, 46, 14);
 		panel_1.add(lblSeuId);
-		
+
 		textFieldSeuID = new JTextField();
 		textFieldSeuID.setBounds(64, 80, 96, 20);
 		panel_1.add(textFieldSeuID);
 		textFieldSeuID.setColumns(10);
-		
+
 		JButton button_1 = new JButton("Definir");
 		button_1.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
@@ -268,6 +273,9 @@ public class RelogioGUI {
 
 	}
 
+	/**
+	 * Metodo que inicia o contador
+	 */
 	public void inicia(){
 		controller.iniciaContador();
 		btnIniciarConectar.setEnabled(false);
@@ -281,6 +289,9 @@ public class RelogioGUI {
 		button.setEnabled(true);
 	}
 
+	/**
+	 * Metodo que altera o tempo
+	 */
 	public void alterar(){
 		String hora = textFieldHA.getText();
 		String minuto = textFieldMA.getText();
@@ -323,6 +334,9 @@ public class RelogioGUI {
 		}
 	}
 
+	/**
+	 * Metodo que altera o drift
+	 */
 	public void alteraDrift(){
 		if(!textField.getText().equals("")){
 			try{
@@ -339,10 +353,16 @@ public class RelogioGUI {
 		}
 	}
 
+	/**
+	 * Metodo que altera o ip multicast
+	 */
 	public void atualizaMulticast(){
 		controller.setIp(textFieldIP.getText());
 	}
-	
+
+	/**
+	 * Metodo que altera o id
+	 */
 	public void alterarSeuID(){
 		try{
 			int id = Integer.parseInt(textFieldSeuID.getText());
@@ -350,6 +370,6 @@ public class RelogioGUI {
 		}catch(Exception e){
 			JOptionPane.showMessageDialog(null,"Numero invalido","Erro",2);	
 		}
-		
+
 	}
 }

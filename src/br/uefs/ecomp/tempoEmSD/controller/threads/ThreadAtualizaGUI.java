@@ -4,6 +4,11 @@ import javax.swing.JLabel;
 
 import br.uefs.ecomp.tempoEmSD.controller.ControllerRelogio;
 
+/**
+ * 
+ * @author Alyson Dantas
+ *
+ */
 public class ThreadAtualizaGUI extends Thread {
 	
 	private ControllerRelogio controller = ControllerRelogio.getInstance();
@@ -14,6 +19,15 @@ public class ThreadAtualizaGUI extends Thread {
 	private JLabel lblIdR;
 	private JLabel lblDrift;
 	
+	/**
+	 * Construtor
+	 * @param lblH
+	 * @param lblM
+	 * @param lblS
+	 * @param lblId
+	 * @param labelIdReferencia
+	 * @param lblDrift
+	 */
 	public ThreadAtualizaGUI(JLabel lblH, JLabel lblM, JLabel lblS,JLabel lblId, JLabel labelIdReferencia, JLabel lblDrift){
 		this.lblH = lblH;
 		this.lblM = lblM;
@@ -23,6 +37,9 @@ public class ThreadAtualizaGUI extends Thread {
 		this.lblDrift = lblDrift;
 	}
 	
+	/**
+	 * Metodo run
+	 */
 	@Override
 	public void run(){
 		while(true){

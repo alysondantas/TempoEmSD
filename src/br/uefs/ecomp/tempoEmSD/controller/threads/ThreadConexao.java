@@ -11,6 +11,11 @@ import java.util.regex.Pattern;
 
 import br.uefs.ecomp.tempoEmSD.controller.ControllerRelogio;
 
+/**
+ * 
+ * @author Alyson Dantas
+ *
+ */
 public class ThreadConexao extends Thread {
 	private String msgR;
 	private ControllerRelogio controller;
@@ -18,6 +23,12 @@ public class ThreadConexao extends Thread {
 	private ThreadEleitor threadEleitor;
 	private ThreadAlterarReferencial threadReferencial;
 
+	/**
+	 * Construtor conexao
+	 * @param ip
+	 * @param threadEleitor
+	 * @param thread
+	 */
 	public ThreadConexao(String ip, ThreadEleitor threadEleitor, ThreadAlterarReferencial thread){
 		controller = ControllerRelogio.getInstance();
 		setMsgR("");
@@ -26,6 +37,9 @@ public class ThreadConexao extends Thread {
 		this.threadReferencial = thread;
 	}
 
+	/**
+	 * Metodo run
+	 */
 	@Override
 	public void run(){
 		MulticastSocket socket;
@@ -35,65 +49,43 @@ public class ThreadConexao extends Thread {
 			while(true){
 				byte[] b = new byte[1024];
 				DatagramPacket dgram = new DatagramPacket(b, b.length);
-
-				//System.out.println("Aguardando receber mensagem:");
 				socket.receive(dgram);
 				String msg = new String(b, 0, dgram.getLength()).trim();//limpa a mensagem recebida
 				this.msgR = msg;
-				//System.out.println("Mensagem recebida " + msg + " de " + dgram.getAddress());
 				dgram.setLength(b.length);
 
 				String informacoes[] = msg.split(Pattern.quote("$"));
-				//if(!informacoes[0].equals("" + controller.getId()) && !controller.isContaSozinho() && !informacoes[2].equals("0")){
-					switch(informacoes[1]){
-					case "0":
-						//if(!informacoes[0].equals("" + controller.getId())){
-							System.out.println("Solicitação de eleição");
-							String tempo = "";
-							controller.setContaSozinho(true);
-							tempo = controller.getId() + "$" + "1" + "$" + controller.getHoras() + ":" + controller.getMinutos() + ":" + controller.getSegundos();
-							sendTo(tempo);
-						//}
-						
-						break;
-					case "1":
-						//System.out.println("Novo tempo recebido " + informacoes[2] + " de: " + informacoes[0]);
-						threadEleitor.addTempo(informacoes[2] + ":" + informacoes[0]);
-						threadEleitor.setExecutando(true);
-						/*if(threadEleitor.isAlive()){
-							System.out.println("thread eleitor rodando");
-							
-						}else{
-							threadEleitor.start();
-							System.out.println("thread eleitor iniciada");
-						}*/
-						
-						break;
-					case "2":
-						System.out.println("Recebido novo eleito por " + informacoes[0] + " é " + informacoes[2]);
-						threadReferencial.addNovaEleicao(informacoes[0] + ":" + informacoes[2]);
-						threadReferencial.setExecutando(true);
-						/*
-						if(threadReferencial.isAlive()){
-							System.out.println("thread verificacao rodando");
-						}else{
-							threadReferencial.start();
-							System.out.println("thread verificacao iniciada");
-						}*/
-						
-					}
-				//}
-				msg = "";
+				switch(informacoes[1]){//pega a opcao recebida
+				case "0"://uma nova eleição solicitada
+					System.out.println("Solicitação de eleição");
+					String tempo = "";
+					controller.setContaSozinho(true);
+					tempo = controller.getId() + "$" + "1" + "$" + controller.getHoras() + ":" + controller.getMinutos() + ":" + controller.getSegundos();
+					sendTo(tempo);
 
+					break;
+				case "1"://se for 1 começa uma eleição
+					threadEleitor.addTempo(informacoes[2] + ":" + informacoes[0]);
+					threadEleitor.setExecutando(true);//habilita a eleição
+
+					break;
+				case "2"://caso alguem seja eleito
+					System.out.println("Recebido novo eleito por " + informacoes[0] + " é " + informacoes[2]);
+					threadReferencial.addNovaEleicao(informacoes[0] + ":" + informacoes[2]);
+					threadReferencial.setExecutando(true);//habilita a observação de eleição
+				}
+				msg = "";
 			}
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
-
-
 	}
 
+	/**
+	 * Metodo que envia mensagem pelo canal
+	 * @param s
+	 */
 	public void sendTo(String s){
 		DatagramSocket socket;
 		try {
@@ -103,7 +95,6 @@ public class ThreadConexao extends Thread {
 
 			dgram = new DatagramPacket(b, b.length, InetAddress.getByName(ip), 4545);
 
-			//System.err.println("Enviando msg: " + s);
 			socket.send(dgram);
 
 		} catch (SocketException e) {
@@ -118,18 +109,34 @@ public class ThreadConexao extends Thread {
 		}
 	}
 
+	/**
+	 * Metodo de pegar a msg
+	 * @return
+	 */
 	public String getMsgR() {
 		return msgR;
 	}
 
+	/**
+	 * Metodo de modificar a mensagem
+	 * @param msgR
+	 */
 	public void setMsgR(String msgR) {
 		this.msgR = msgR;
 	}
-	
+
+	/**
+	 * Metodo de modificar a thread Eleitor
+	 * @param thread
+	 */
 	public void setThreadEleitor(ThreadEleitor thread){
 		this.threadEleitor = thread;
 	}
-	
+
+	/**
+	 * Metodo de modificar a thread Referencia
+	 * @param thread
+	 */
 	public void setThreadReferencial(ThreadAlterarReferencial thread){
 		this.threadReferencial = thread;
 	}
